@@ -9,7 +9,7 @@ using namespace std;
 void displayUniverse(int, int, int[][MAX_COLS]);
 void populateUniverse(int, int[][MAX_COLS]);
 void simulatesUniverse(int, int, int[][MAX_COLS]);
-bool checkNeighbors(int);
+void checkNeighbors(int, int, int[][MAX_COLS]);
 
 int main(){
   int theUniverse[MAX_ROWS][MAX_COLS] = {0};
@@ -51,5 +51,56 @@ void populateUniverse(int maxCells, int theUni[][MAX_COLS]){
 }
 
 void simulatesUniverse(int numRows, int numCols, int theUni[][MAX_COLS]){
-  for(int i = 0; i < numRows; i++){}
+}
+
+void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS]){
+  int liveCells = 0;
+  for(int i = 0; i < numRows; i++){
+    for(int j = 0; j < numCols; j++){
+      // Checks corners.
+      if(i == 0 && j == 0){
+        liveCells = theUni[i + 1][j] + theUni[i][j + 1] + theUni[i + 1][j + 1];
+      }
+      else if(i == 0 && j == numCols - 1){
+          liveCells = theUni[i][j + 1] + theUni[i - 1][j] + theUni[i - 1][j + 1];
+      }
+      else if(i == numRows - 1 && j = numCols){
+          liveCells = theUni[i][j + 1] + theUni[i + 1][j] + theUni[i + 1][j - 1];
+      }
+        else if(i == numRows - 1 && j == numCols - 1){
+          liveCells = theUni[i - 1][j] + theUni[i][j - 1] + theUni[i - 1][j - 1];
+      }
+
+      // Checks edges.
+      else if(i == 0 && (j != 0 || j != numCols - 1)){
+        liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUniv[i][j + 1] + theUni[i +  1][j + 1] + theUni[i + 1][j];
+      }
+      else if(i == numRows - 1; && (j != 0 || j != numCols - 1)){
+          liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUniv[i][j + 1] + theUni[i +  1][j + 1] + theUni[i + 1][j];
+      }
+        else if((i != 0 || i != numRows - 1) && j == 0){
+        liveCells = theUni[i][j + 1] + theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i + 1][j - 1] + theUni[i][j - 1];
+      }
+        else if((i != 0 || i != numRows - 1) && j == numCols - 1){
+          liveCells = theUni[i][j + 1] + theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i - 1][j - 1] + theUni[i][j - 1];
+      }
+      
+      // Checks everywhere else.
+      else{
+        liveCells = theUniv[i - 1][j + 1] + theUni[i][j + 1] + theUni[i + 1][j + 1] + theUni[i-1][j] + theUni[i + 1][j] + theUni[i - 1][j - 1] + theUni[i][j - 1] + theUni[i + 1][j - 1];
+      }
+
+      // The Result
+      if(theUni[i][j] == 1 && (liveCells < 2 || liveCells > 3)){
+        theUni[i][j] = 0;
+      }
+      else if(theUni[i][j] == 1 && (liveCells == 2 || liveCells == 3){
+        theUni[i][j] = 1;
+      }
+      else if(theUni[i][j] == 0 && liveCells == 3){
+        theUni[i][j] = 1;
+      }
+
+    }
+  }
 }
