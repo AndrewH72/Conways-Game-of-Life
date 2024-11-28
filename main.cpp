@@ -33,6 +33,7 @@ void displayUniverse(int numRows, int numCols, int theUni[][MAX_COLS]){
    Outputs all the values in our universe. Either 0 (dead) or 1 (alive).
   */
   for(int i = 0; i < numRows; i++){
+    cout << "             ";
     for(int j = 0; j < numCols; j++){
       cout << theUni[i][j] << " ";
     }
@@ -68,14 +69,19 @@ void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_C
 
 void simulatesUniverse(int numIterations, int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){
   copyUniverse(numRows, numCols, theUni, theUniCopy);
+  cout << "-\n - - Simulation Starting - - -" << endl;
+  this_thread::sleep_for(1s);
   for(int i = 0; i < numIterations; i++){
-    // system("clear");
-    cout << "Iteration " << i + 1 << endl;
+    system("clear");
+    cout << "          Iteration " << i + 1 << endl;
     displayUniverse(numRows, numCols, theUniCopy);
-    // this_thread::sleep_for(1s);
+    this_thread::sleep_for(1s);
     checkNeighbors(numRows, numCols, theUni, theUniCopy);
   }
-} void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){ int liveCells = 0; for(int i = 0; i < numRows; i++){
+  cout << "- - - Simulation Complete - - -" << endl;
+} 
+
+void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){ int liveCells = 0; for(int i = 0; i < numRows; i++){
     for(int j = 0; j < numCols; j++){
       // Checks corners.
       if(i == 0 && j == 0){
