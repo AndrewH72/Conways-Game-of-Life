@@ -89,21 +89,21 @@ void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS]){
 
       // Checks edges.
       else if(i == 0 && (j != 0 && j != numCols - 1)){
-        liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j + 1] + theUni[i +  1][j + 1] + theUni[i + 1][j];
+        liveCells = theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i][j + 1] + theUni[i +  1][j - 1] + theUni[i][j - 1];
       }
       else if(i == numRows - 1 && (j != 0 && j != numCols - 1)){
-          liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j + 1] + theUni[i +  1][j + 1] + theUni[i + 1][j];
+          liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j - 1] + theUni[i - 1][j - 1] + theUni[i - 1][j + 1];
       }
         else if((i != 0 && i != numRows - 1) && j == 0){
-        liveCells = theUni[i][j + 1] + theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i + 1][j - 1] + theUni[i][j - 1];
+        liveCells = theUni[i][j + 1] + theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i - 1][j + 1] + theUni[i - 1][j];
       }
         else if((i != 0 && i != numRows - 1) && j == numCols - 1){
-          liveCells = theUni[i][j + 1] + theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i - 1][j - 1] + theUni[i][j - 1];
+          liveCells = theUni[i][j - 1] + theUni[i - 1][j] + theUni[i - 1][j - 1] + theUni[i + 1][j - 1] + theUni[i + 1][j]; 
       }
       
       // Checks everywhere else.
       else{
-        liveCells = theUni[i - 1][j + 1] + theUni[i][j + 1] + theUni[i + 1][j + 1] + theUni[i - 1][j] + theUni[i + 1][j] + theUni[i - 1][j - 1] + theUni[i][j - 1] + theUni[i + 1][j - 1];
+        liveCells = theUni[i - 1][j - 1] + theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j - 1] + theUni[i][j + 1] + theUni[i + 1][j - 1] + theUni[i + 1][j] + theUni[i + 1][j + 1];
       }
 
       // The Result
