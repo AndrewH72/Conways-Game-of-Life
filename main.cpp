@@ -2,7 +2,6 @@
 TODO:
   - create a new matrix where we will put the next iteration in,
   then we just pass that in as the next matrix to work on.
-  - continue with debugging check neighbors function.
 */
 
 #include <iostream>
@@ -16,14 +15,15 @@ using namespace std;
 #define MAX_CELLS 5
 
 void displayUniverse(int, int, int[][MAX_COLS]);
+void copyUniverse(int, int, int[][MAX_COLS], int[][MAX_COLS]);
 void populateUniverse(int, int, int, int[][MAX_COLS]);
-void simulatesUniverse(int, int, int, int[][MAX_COLS]);
-void checkNeighbors(int, int, int[][MAX_COLS]);
+void simulatesUniverse(int, int, int, int[][MAX_COLS], int[][MAX_COLS]);
+void checkNeighbors(int, int, int[][MAX_COLS], int[][MAX_COLS]);
 
 int main(){
-  int theUniverse[MAX_ROWS][MAX_COLS] = {0};
+  int theUniverse[MAX_ROWS][MAX_COLS] = {0}, theUniverseCopy[MAX_ROWS][MAX_COLS] = {0};
   populateUniverse(MAX_ROWS, MAX_COLS, MAX_CELLS, theUniverse);
-  simulatesUniverse(10, MAX_ROWS, MAX_COLS, theUniverse);
+  simulatesUniverse(10, MAX_ROWS, MAX_COLS, theUniverse, theUniverseCopy);
   
 
 }
@@ -41,6 +41,13 @@ void displayUniverse(int numRows, int numCols, int theUni[][MAX_COLS]){
   cout << endl;
 }
 
+void copyUniverse(int numRows, int numCols, int originalUni[][MAX_COLS], int copiedUni[][MAX_COLS]){
+  for(int i = 0; i < numRows; i++){
+    for(int j = 0; j < numCols; j++){
+      copiedUni[i][j] = originalUni[i][j];
+    }
+  }
+}
 
 void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_COLS]){
   /*
@@ -59,19 +66,16 @@ void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_C
   }
 }
 
-void simulatesUniverse(int numIterations, int numRows, int numCols, int theUni[][MAX_COLS]){
+void simulatesUniverse(int numIterations, int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){
+  copyUniverse(numRows, numCols, theUni, theUniCopy);
   for(int i = 0; i < numIterations; i++){
     // system("clear");
     cout << "Iteration " << i + 1 << endl;
-    displayUniverse(numRows, numCols, theUni);
+    displayUniverse(numRows, numCols, theUniCopy);
     // this_thread::sleep_for(1s);
-    checkNeighbors(numRows, numCols, theUni);
+    checkNeighbors(numRows, numCols, theUni, theUniCopy);
   }
-}
-
-void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS]){
-  int liveCells = 0;
-  for(int i = 0; i < numRows; i++){
+} void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){ int liveCells = 0; for(int i = 0; i < numRows; i++){
     for(int j = 0; j < numCols; j++){
       // Checks corners.
       if(i == 0 && j == 0){
@@ -92,7 +96,7 @@ void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS]){
         liveCells = theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i][j + 1] + theUni[i +  1][j - 1] + theUni[i][j - 1];
       }
       else if(i == numRows - 1 && (j != 0 && j != numCols - 1)){
-          liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j - 1] + theUni[i - 1][j - 1] + theUni[i - 1][j + 1];
+          liveCells = theUni[i - 1][j] + theUni[i - 1][j + 1] + theUni[i][j - 1] + theUni[i - 1][j - 1] + theUni[i][j + 1];
       }
         else if((i != 0 && i != numRows - 1) && j == 0){
         liveCells = theUni[i][j + 1] + theUni[i + 1][j] + theUni[i + 1][j + 1] + theUni[i - 1][j + 1] + theUni[i - 1][j];
@@ -108,14 +112,15 @@ void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS]){
 
       // The Result
       if(theUni[i][j] == 1 && (liveCells < 2 || liveCells > 3)){
-        theUni[i][j] = 0;
+        theUniCopy[i][j] = 0;
       }
       else if(theUni[i][j] == 1 && (liveCells == 2 || liveCells == 3)){
-        theUni[i][j] = 1;
+        theUniCopy[i][j] = 1;
       }
       else if(theUni[i][j] == 0 && liveCells == 3){
-        theUni[i][j] = 1;
+        theUniCopy[i][j] = 1;
       }
     }
   }
+  copyUniverse(numRows, numCols, theUniCopy, theUni);
 }
