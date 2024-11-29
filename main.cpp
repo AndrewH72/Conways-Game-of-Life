@@ -1,19 +1,23 @@
 /*
 TODO:
-  - create a new matrix where we will put the next iteration in,
-  then we just pass that in as the next matrix to work on.
+  - make it so instead of ones and zeros its actually black or white.
+  - make everything centered.
 */
 
 #include <iostream>
 #include <random>
 #include <chrono>
 #include <thread>
+#include <unistd.h>
+#include <sys/ioctl.h>
 using namespace std;
 
-#define MAX_ROWS 3
-#define MAX_COLS 3
-#define MAX_CELLS 5
+#define MAX_ROWS 20
+#define MAX_COLS 20
+#define MAX_CELLS 100
 
+int getTerminalWidth();
+void printCenteredText(const string&);
 void displayUniverse(int, int, int[][MAX_COLS]);
 void copyUniverse(int, int, int[][MAX_COLS], int[][MAX_COLS]);
 void populateUniverse(int, int, int, int[][MAX_COLS]);
@@ -28,14 +32,41 @@ int main(){
 
 }
 
+int getTerminalWidth(){
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  return w.ws_col;
+}
+void printCenteredText(const string& text){
+  int terminalWidth = getTerminalWidth();
+  int textLength = text.length();
+  int padding = (terminalWidth - textLength) / 2;
+
+  for(int i = 0; i < padding; i++){
+    cout << " ";
+  }
+  cout << text << endl;
+
+}
+
 void displayUniverse(int numRows, int numCols, int theUni[][MAX_COLS]){
   /*
    Outputs all the values in our universe. Either 0 (dead) or 1 (alive).
   */
+  int terminalWidth = getTerminalWidth();
+  int matrixWidth = numCols * 2;
+  int padding = (terminalWidth - matrixWidth) / 2;
   for(int i = 0; i < numRows; i++){
-    cout << "             ";
+    for(int p = 0; p < padding; p++){
+      cout << " ";
+    }
     for(int j = 0; j < numCols; j++){
-      cout << theUni[i][j] << " ";
+      if(theUni[i][j] == 1){
+        cout << "\033[47m  \033[0m";
+      }
+      else{
+        cout << "\033[40m  \033[0m";
+      }
     }
     cout << endl;
   }
@@ -46,12 +77,7 @@ void copyUniverse(int numRows, int numCols, int originalUni[][MAX_COLS], int cop
   for(int i = 0; i < numRows; i++){
     for(int j = 0; j < numCols; j++){
       copiedUni[i][j] = originalUni[i][j];
-    }
-  }
-}
-
-void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_COLS]){
-  /*
+    } } } void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_COLS]){ /*
   Picks out a random cell in the universe and populates it (replaces the value with a 1).
   */ 
   srand(time(0));
@@ -69,16 +95,19 @@ void populateUniverse(int maxRows, int maxCols, int maxCells, int theUni[][MAX_C
 
 void simulatesUniverse(int numIterations, int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){
   copyUniverse(numRows, numCols, theUni, theUniCopy);
-  cout << "-\n - - Simulation Starting - - -" << endl;
+  printCenteredText("- - - SIMULATION STARTING - - -");
   this_thread::sleep_for(1s);
   for(int i = 0; i < numIterations; i++){
-    system("clear");
-    cout << "          Iteration " << i + 1 << endl;
+    system("clear"); 
+    
+    string iterationText = "Iteration " + to_string(i + 1);
+    printCenteredText(iterationText);
     displayUniverse(numRows, numCols, theUniCopy);
     this_thread::sleep_for(1s);
+
     checkNeighbors(numRows, numCols, theUni, theUniCopy);
   }
-  cout << "- - - Simulation Complete - - -" << endl;
+  printCenteredText("- - - SIMULATION COMPLETE - - -");
 } 
 
 void checkNeighbors(int numRows, int numCols, int theUni[][MAX_COLS], int theUniCopy[][MAX_COLS]){ int liveCells = 0; for(int i = 0; i < numRows; i++){
